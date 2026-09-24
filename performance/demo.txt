@@ -1,0 +1,19 @@
+⍝ Parallel is not the same as concurrent: the same work, three ways.
+⍝ Before running:  )copy isolate   and fix collatz primes splits time from this folder.
+⍝ Each timed line prints:  elapsed-ms  cpu-ms-of-this-process  result
+⍝ Run a line twice: the first run of anything in a fresh workspace is slower.
+
+⍝ ---- Example 1: longest Collatz chain below 2 million (pure compute, tiny result)
+chunks←10 splits 2 2E6                                ⍝ ten (start end) pairs covering 2..2E6
+best←{(⊃⍒⍵[;⎕IO])⌷⍵}                                   ⍝ the row with the most steps: steps start
+
+t r←({↑collatz¨⍵} time) chunks ⋄ t,best r              ⍝ one after another, in this process
+t r←({↑⎕TSYNC collatz&¨⍵} time) chunks ⋄ t,best r      ⍝ ten APL threads: concurrent, but still one process, one core
+t r←({↑collatz IÏ ⍵} time) chunks ⋄ t,best r           ⍝ ten isolates: a process per core, so actually parallel
+
+⍝ ---- Example 2: how many primes below 1E9 (memory-bound sieve, tiny result)
+chunks←10 splits 2 1E9
+({+/{≢primes ⍵}¨⍵} time) chunks                        ⍝ sequential
+iss←isolate.New¨10⍴⊂⎕NS'primes'                        ⍝ ten isolates that each hold a copy of primes
+({+/iss.{≢primes ⍵}⍵} time) chunks                     ⍝ parallel, but well under 10×: ten cores share one memory bus
+({≢⊃,/primes IÏ ⍵} time) chunks                        ⍝ ship all 50,847,534 primes back instead: the gain is gone

@@ -1,0 +1,5 @@
+time←{⎕IO←1                         ⍝ (f time) ⍵: (elapsed ms)(CPU ms of this process), then the result of f ⍵
+     s←⎕AI[3 2]
+     r←⍺⍺ ⍵
+     (⎕AI[3 2]-s)r
+ }

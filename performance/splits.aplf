@@ -1,0 +1,5 @@
+splits←{⎕IO←0                       ⍝ ⍺ splits lo hi: ⍺ (start end) pairs covering [lo,hi)
+     lo hi←⍵
+     e←lo+⌊(hi-lo)×(⍳⍺+1)÷⍺       ⍝ ⍺+1 boundaries, equally spaced
+     2,/e                        ⍝ consecutive pairs
+ }

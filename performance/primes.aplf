@@ -1,0 +1,24 @@
+primes←{⎕IO ⎕ML←0 1                 ⍝ Primes in the half-open range [m,n)
+     ⍝ Simplified from psieve: returns the primes themselves, not the mask.
+     ⍝ Segmented sieve: needs only m n, so each segment is independent
+     ⍝ and can run in its own isolate.
+     m n←⍵
+     0=r←n-m:⍬                   ⍝ length of boolean vector; quick exit if 0
+     s←⌊n*0.5                    ⍝ largest trial divisor we need to consider
+     pn←×/p←2 3 5                ⍝ starter set of primes (wheel of 30)
+     q←∧⌿0≠p∘.|⍳pn               ⍝ starter pattern (multiples of 2 3 5 are 0)
+     d←⍸q                        ⍝ trial divisors: 1 7 11 13 17 19 23 29
+     b←r⍴(pn|m)⌽q                ⍝ initialise b with repetitions of the pattern
+     b[((m≤p)∧p<n)/p-m]←1        ⍝ fix up b entries for 2 3 5, if in range
+     b[((m≤1)∧1<n)/1-m]←0        ⍝ fix up b entry for 1, if in range
+     f←{                         ⍝ ⍵ is (pn×i)+j where j∊d
+         c←(m≤⍵)∧b[0⌈⍵-m]        ⍝ is ⍵ itself in range and still marked?
+         j2←⍵×2
+         k←(j2×⍵<t)+⍵-t←j2|m     ⍝ offset of first odd multiple of ⍵ at or after m
+         b[k+j2×⍳0⌈⌈(r-k)÷j2]←0  ⍝ cross out odd multiples of ⍵
+         c:b[⍵-m]←1              ⍝ restore entry for ⍵ itself if necessary
+         0                       ⍝ dummy result
+     }
+     _←{{0=⍵:0 ⋄ f ⍵}¨{(s≥⍵)/⍵}⍵+(0=⍵)↓d}¨pn×⍳⌈s÷pn
+     m+⍸b                        ⍝ the primes
+ }
