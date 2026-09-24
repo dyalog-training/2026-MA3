@@ -1,0 +1,3 @@
+bal←Balance acct;m
+m←LEDGER[;ACC]=acct
+bal←(+/m×LEDGER[;DEB])-(+/m×LEDGER[;CR])

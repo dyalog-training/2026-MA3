@@ -1,0 +1,11 @@
+ ScenarioB
+ TID←1 ⋄ ACC←2 ⋄ DEB←3 ⋄ CR←4      ⍝ column names, for readability
+
+⍝ Scenario B
+⍝ The auditor attempts to read the books while they are being written.
+⍝ The failure means that the ledger is "torn" (+/DEBIT)≠(+/CREDIT)
+⍝ The debits should match the credits across the ledger at any one time.
+
+ LEDGER←NewLedger 1000 1000 1000
+ res←⎕TSYNC(WriteLoop&500),AuditLoop&¨3⍴100000
+ ⎕←(+/1↓res),'tears in ledger'   ⍝ how many ledger tears?

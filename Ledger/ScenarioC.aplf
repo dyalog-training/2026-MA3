@@ -1,0 +1,20 @@
+ ScenarioC
+
+⍝ Scenario C
+⍝ Observe the timing impact of different synchronisation strategies.
+⍝ This scenario carries out read and write loops as in ScenarioB,
+⍝ but also shows the elapsed time taken.
+
+ _Time←{
+     t←3⊃⎕AI
+     _←⍺⍺ ⍵
+     t-⍨3⊃⎕AI
+ }
+
+ LEDGER←NewLedger 1000 1000 1000
+ DoBanking←{
+     ⎕TSYNC(0.01∘WriteLoop&40),(0.05∘AuditLoop _Time&¨⍵)
+ }
+ ⎕←⌈/DoBanking 2⍴15
+
+ ⍝

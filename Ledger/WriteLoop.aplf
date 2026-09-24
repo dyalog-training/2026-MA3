@@ -1,0 +1,7 @@
+ r←{delay}WriteLoop n;dl;i
+ dl←⎕VGET⊂'delay' 0
+ :For i :In ⍳n
+     {}Transfer(1+3|i)(1+3|i+1)1(1000+i)   ⍝ amt 1 among customers 1..3
+     {}⎕DL dl
+ :EndFor
+ r←0

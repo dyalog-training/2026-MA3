@@ -1,0 +1,7 @@
+ torn←{delay}AuditLoop n;dl;i;t
+ dl←⎕VGET⊂'delay' 0
+ t←0
+ :For i :In ⍳n
+     t+←Audit dl
+ :EndFor
+ torn←t

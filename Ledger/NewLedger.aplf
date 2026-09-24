@@ -1,0 +1,9 @@
+ NewLedger←{
+⍝ ⍵: starting amounts for corresponding accounts
+⍝ ←: ledger matrix [ ; tnxID, accID, debit, credit]
+⍝    showing transactions from the CAPTIAL account (0=accID)
+⍝    to each new account
+     amt←⍵
+     id←⍳≢amt
+     (2/id),(∊id,¨0),(∊amt,¨0),⍪(∊0,¨amt)
+ }

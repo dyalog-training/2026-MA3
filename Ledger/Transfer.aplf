@@ -1,0 +1,16 @@
+ posted←Transfer(from to amt id)
+
+ :If amt>Balance from
+     posted←0 ⋄ :Return
+ :EndIf
+
+ {}⎕DL 0.001   ⍝ Simulate time for transaction to occur (network etc.)
+
+ LEDGER⍪←id,to,amt,0
+⍝  [
+⍝      id,to,amt,0
+⍝      id,from,0,amt
+⍝  ]
+ {}⎕DL 0.0003   ⍝ To make race condition more obvious
+ LEDGER⍪←id,from,0,amt
+ posted←1

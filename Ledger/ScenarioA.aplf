@@ -1,0 +1,20 @@
+ ScenarioA
+ TID←1 ⋄ ACC←2 ⋄ DEB←3 ⋄ CR←4      ⍝ column names, for readability
+
+⍝ Scenario A
+⍝ One customer has AMT. Four tellers try to move AMT out of the account.
+⍝ Only one should succeed. The failure causes account 1 to be overdrawn.
+
+ AMT←100
+ LEDGER←NewLedger AMT 0 0
+
+⍝ FIXME IDs should be chars to be easier to read
+
+ transfers←(
+     1 2 AMT 100
+     1 2 AMT 200
+     1 2 AMT 300
+     1 2 AMT 400
+ )
+ {}⎕TSYNC Transfer&¨transfers
+ ⎕←⌊/Balance¨1 2 3   ⍝ min customer balance should be ≥ 0
