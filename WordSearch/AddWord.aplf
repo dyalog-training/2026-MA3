@@ -1,0 +1,8 @@
+ resp←AddWord word;exists;idx
+ exists←(≢WORDS)≥idx←WORDS⍳⊂word
+ :If exists
+     'word already found'
+     :Return
+ :EndIf
+ InsertNewWord word
+ resp←'word ',word,' added.'

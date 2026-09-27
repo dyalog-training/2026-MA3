@@ -1,0 +1,24 @@
+ ScenarioA;chunk;n;nearest;new_words
+
+⍝ In this scenario, we simulate the concurrent addition of hundreds of words and searching at the same time.
+⍝ As written, the system errors while attempting to add or search for words.
+
+ WORDS←''
+ DIST←0 0⍴0
+
+ new_words←⊃⎕NGET'WordSearch/dict.txt' 1   ⍝ Nested vector of words
+
+ n←10   ⍝ Number of simultaneous AddWord requests
+ nearest←''
+ responses←''
+ :While 0<≢new_words
+     chunk←n↑new_words
+     {}AddWord&¨chunks          ⍝ Add many words
+     nearest,←⎕TSYNC Search&∘⊃¨chunks   ⍝ ...while searching the index
+     new_words↓⍨←n
+ :EndWhile
+ ⎕←≢nearest
+
+⍝ Check correctness
+ result←'FAIL' 'PASS'⊃⍨⎕IO+WORDS≡⍥{⍵[⍋⍵]}new_words
+ ⎕←'All words successfully added: ',result
