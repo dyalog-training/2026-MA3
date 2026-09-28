@@ -20,37 +20,36 @@ r ← 3⌽fut
 
 ## Parallelisation Performance
 ```apl
-]import # /path/to/parallel-performance
-collatz 2 2e6
-chunks←10 splits 2 2e6
-best←{⍵⊃⍨⊃⍒⍵}
-collatz¨chunks
-⎕TSYNC collatz&¨chunks
-collatz IÏ chunks
+]import # /path/to/Performance
+Collatz 2 2e6
+chunks←10 Splits 2 2e6
+Best←{⍵⊃⍨⊃⍒⍵}
+Collatz¨chunks
+⎕TSYNC Collatz&¨chunks
+Collatz IÏ chunks
 ```
 
-One collatz step is encoded in `OneCollatz`. The function `collatz` gives the number of steps and starting number of the longest sequence in range `m... n`.
+One collatz step is encoded in `CollatzStep`. The function `Collatz` gives the number of steps and starting number of the longest sequence in range `m... n`.
 
 For example, it takes 118 steps to go from 97 to 1:
 ```
-      collatz 2 100
+      Collatz 2 100
 118 97
-      i←0 ⋄ OneCollatz⍣{i+←1 ⋄ 1=⍺} 97 ⋄ ⎕←i
+      i←0 ⋄ CollatzStep⍣{i+←1 ⋄ 1=⍺} 97 ⋄ ⎕←i
 1
 118
 ```
 
-Use the `time` operator to measure run time of expressions.
+Use the `_Time` operator to measure run time of expressions.
 
 ```apl
-(t r)←{collatz ⍵}time 2 2e6
+Collatz _Time 2 2e6
 
-chunks←10 splits 2 2e6
-best←{⍵⊃⍨⊃⍒⍵}
+chunks←10 Splits 2 2e6
 
-(t r)←{collatz¨⍵}time chunks         ⋄ t,best r
-(t r)←{⎕TSYNC collatz&¨⍵}time chunks ⋄ t,best r
-(t r)←{collatz IÏ ⍵}time chunks      ⋄ t,best r
+{Best Collatz¨⍵}_Time chunks
+{Best ⎕TSYNC Collatz&¨⍵}_Time chunks
+{Best Collatz IÏ ⍵}_Time chunks
 ```
 
 1. Before running, guess an order 1 (fastest) to 4 (slowest) of the relative performance of each version
