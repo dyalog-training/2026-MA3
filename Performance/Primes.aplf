@@ -1,4 +1,4 @@
-primes←{⎕IO ⎕ML←0 1                 ⍝ Primes in the half-open range [m,n)
+Primes←{⎕IO ⎕ML←0 1                 ⍝ Primes in the half-open range [m,n)
      ⍝ Simplified from psieve: returns the primes themselves, not the mask.
      ⍝ Segmented sieve: needs only m n, so each segment is independent
      ⍝ and can run in its own isolate.

@@ -1,4 +1,4 @@
-collatz←{⎕IO←0                      ⍝ longest Collatz chain among starts m..n-1 → steps start
+Collatz←{⎕IO←0                      ⍝ longest Collatz chain among starts m..n-1 → steps start
      m n←⍵
      s←(2⌈m)+⍳n-2⌈m                 ⍝ the starting numbers (1 is excluded)
      step←{v s i last←⍵             ⍝ live values, their starts, steps so far, latest finishers
