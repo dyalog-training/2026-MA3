@@ -53,7 +53,7 @@ chunks←10 Splits 2 2e6
 ```
 
 1. Before running, guess an order 1 (fastest) to 4 (slowest) of the relative performance of each version
-2. Try to estimate run times of different versions based on number of processors (`1111⌶⍬`) and the average run time of a single chunk.
+2. Try to estimate run times of different versions based on number of processors in your machine and the average run time of a single chunk.
 3. Try using fewer chunks and more chunks than the number of processors. What happens to performance?
 4. Why do these expressions have these performance characteristics?
 
@@ -61,9 +61,7 @@ chunks←10 Splits 2 2e6
 Reserve a token range with `⎕TALLOC`.
 Put tokens in the token pool with `⎕TPUT`. Tokens are positive or negative real numbers. Tokens with the same magnitude (absolute value `|⍵`) are said to be _of the same type_.
 
-Get a token `⎕TGET`.
-
-`⎕TGET` and `⎕TPUT` can also be used to store and retrieve values.
+Get a token `⎕TGET`. This blocks until the requested token is in the token pool.
 
 For a positive token in the pool, only `⎕TGET` of a positive token of the same type allows passage, and that token is removed from the pool.
 
@@ -79,6 +77,14 @@ This behaviour is summarised in the table below.
 | +ve | -ve | Block |
 | -ve | +ve | Proceed; -ve token remains in pool|
 | -ve | -ve | Proceed; -ve token is removed from pool|
+
+`⎕TGET` and `⎕TPUT` can also be used to store and retrieve values.
+
+```
+     'Hello'⎕TPUT 3
+     ⎕←⎕TGET 3   ⍝ The result is enclosed
+ Hello
+```
 
 ## Handling Shared State
 Isolates provide a simple interface to deal with in-progress results. Obtain the result of a completed future, else a fallback value.
