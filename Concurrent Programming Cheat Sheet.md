@@ -3,26 +3,6 @@ Run `function` in a new thread with spawn `function&`. The result is the thread 
 Get array of results from array of thread IDs with `⎕TSYNC`. This blocks until all threads have completed.
 `⎕TSYNC` errors with `DOMAIN ERROR` if called on a completed thread. It should be used inline with spawn calls.
 
-Reserve a token range with `⎕TALLOC`.
-Put tokens in the token pool with `⎕TPUT`. Tokens are positive or negative real numbers. Tokens with the same magnitude (absolute value `|⍵`) are said to be _of the same type_.
-
-Get a token `⎕TGET`.
-
-For a positive token in the pool, only `⎕TGET` of a positive token of the same type allows passage, and that token is removed from the pool.
-
-For a negative token in the pool:
-- `⎕TGET` for positive token of the same type allows passage without removing the token from the pool.
-- `⎕TGET` for a negative token of the same type allows passage and removes the token from the pool.
-
-This behaviour is summarised in the table below.
-
-|Pool|`⎕TGET`|Behaviour|
-|---|---|---|
-| +ve | +ve | Proceed; remove token from pool|
-| +ve | -ve | Block |
-| -ve | +ve | Proceed; -ve token remains in pool|
-| -ve | -ve | Proceed; -ve token is removed from pool|
-
 ## Isolates
 Copy isolates `⎕CY'isolate'` (must be in `#`)
 How many processors? `1111⌶⍬`
@@ -77,6 +57,29 @@ best←{⍵⊃⍨⊃⍒⍵}
 2. Try to estimate run times of different versions based on number of processors (`1111⌶⍬`) and the average run time of a single chunk.
 3. Try using fewer chunks and more chunks than the number of processors. What happens to performance?
 4. Why do these expressions have these performance characteristics?
+
+## The Token Pool
+Reserve a token range with `⎕TALLOC`.
+Put tokens in the token pool with `⎕TPUT`. Tokens are positive or negative real numbers. Tokens with the same magnitude (absolute value `|⍵`) are said to be _of the same type_.
+
+Get a token `⎕TGET`.
+
+`⎕TGET` and `⎕TPUT` can also be used to store and retrieve values.
+
+For a positive token in the pool, only `⎕TGET` of a positive token of the same type allows passage, and that token is removed from the pool.
+
+For a negative token in the pool:
+- `⎕TGET` for positive token of the same type allows passage without removing the token from the pool.
+- `⎕TGET` for a negative token of the same type allows passage and removes the token from the pool.
+
+This behaviour is summarised in the table below.
+
+|Pool|`⎕TGET`|Behaviour|
+|---|---|---|
+| +ve | +ve | Proceed; remove token from pool|
+| +ve | -ve | Block |
+| -ve | +ve | Proceed; -ve token remains in pool|
+| -ve | -ve | Proceed; -ve token is removed from pool|
 
 ## Handling Shared State
 Isolates provide a simple interface to deal with in-progress results. Obtain the result of a completed future, else a fallback value.
