@@ -1,3 +1,0 @@
- torn←Audit rdelay
- torn←(+/LEDGER[;DEB])≠+/LEDGER[;CR]
- {}⎕DL rdelay   ⍝ Simulate report generation time
