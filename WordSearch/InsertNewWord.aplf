@@ -1,5 +1,0 @@
-ok ← InsertNewWord word
-WORDS⍪←⊂word
-new_dist ← word∘Dist¨WORDS
-DIST⍪←¯1↓new_dist
-DIST,←new_dist

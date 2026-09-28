@@ -1,24 +1,21 @@
- ScenarioA;chunk;n;nearest;new_words
+ ScenarioA;chunks;chunk;words_ok;dist_ok;result
 
-⍝ In this scenario, we simulate the concurrent addition of hundreds of words and searching at the same time.
-⍝ As written, the system errors while attempting to add or search for words.
+⍝ In this scenario, we do simultaneous addition and searching of words.
+⍝ As written, the shared WORDS/DIST are updated with no coordination, so threads corrupt one another and the scenario ERRORS partway.
+⍝ Use )SIC to clear suspended threads.
 
  WORDS←''
  DIST←0 0⍴0
 
- new_words←⊃⎕NGET'WordSearch/dict.txt' 1   ⍝ Nested vector of words
-
- n←10   ⍝ Number of simultaneous AddWord requests
- nearest←''
- responses←''
- :While 0<≢new_words
-     chunk←n↑new_words
-     {}AddWord&¨chunks          ⍝ Add many words
-     nearest,←⎕TSYNC Search&∘⊃¨chunks   ⍝ ...while searching the index
-     new_words↓⍨←n
- :EndWhile
- ⎕←≢nearest
+ chunks←(∊20⍴⊂40↑1)⊂CORPUS   ⍝ 20 chunks of 40 words each
+ :For chunk :in chunks
+     {}⎕TSYNC (AddWords&¨chunk),(Search&¨CORPUS[100?≢CORPUS])   ⍝ Many writers and readers
+ :endfor
 
 ⍝ Check correctness
- result←'FAIL' 'PASS'⊃⍨⎕IO+WORDS≡⍥{⍵[⍋⍵]}new_words
- ⎕←'All words successfully added: ',result
+ words_ok←WORDS≡⍥{⍵[⍋⍵]}CORPUS
+ dist_ok←(⍴DIST)≡2⍴≢WORDS
+ result←'FAIL' 'PASS'⊃⍨⎕IO+words_ok∧dist_ok
+ ⎕←'Words added: ',(⍕≢WORDS),'/',(⍕≢CORPUS)
+ ⎕←'⍴DIST: ',⍕⍴DIST
+ ⎕←'Scenario A: ',result
