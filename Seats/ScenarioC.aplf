@@ -1,0 +1,16 @@
+ ScenarioC;pace;audit;res;ms
+⍝ ── C — Throughput checkpoint (a measurement, not PASS/FAIL) ──────────────────
+⍝ A paced clerk runs against two auditors, each rendering at 0.05s per read. Timing is
+⍝ elapsed wall-clock (⎕AI[3]), because ⎕DL burns no CPU: what matters here is
+⍝ overlapping waits, not compute. Read the number across tiers rather than grading it:
+⍝   • as shipped, Board takes no hold. This is the lock-free baseline.
+⍝   • add the L1 :Hold to Board and rerun. It roughly doubles, because the auditors
+⍝     now keep the lock through their render, so they serialise and bookings queue.
+⍝   • at L1.5 the board needs no hold again, so it drops back down.
+⍝ The point is to hold the smallest section, not to conclude that locks are overhead.
+ NewSeats 1000
+ pace←{_←Book ⍵ ⋄ _←⎕DL 0.01 ⋄ 0}                    ⍝ a paced clerk: book, then a gap
+ audit←{t0←3⊃⎕AI ⋄ _←Board¨15⍴0.05 ⋄ (3⊃⎕AI)-t0}     ⍝ 15 reads @0.05s; own elapsed ms
+ res←⎕TSYNC ({_←pace¨⍳40 ⋄ 0}&0),(audit&¨0 0)
+ ms←⌈/1↓res                         ⍝ the slowest auditor's wall-clock
+ ⎕←'C throughput  : slowest auditor wall-clock = ',(⍕ms),' ms   (checkpoint, not PASS/FAIL)'

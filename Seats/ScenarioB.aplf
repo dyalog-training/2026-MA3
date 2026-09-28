@@ -1,0 +1,13 @@
+ ScenarioB;res;torn;ok;result
+⍝ ── B — Torn board (concurrent) ──────────────────────────────────────────────
+⍝ One clerk books 500 seats while three auditors scan the board. A tear shows only
+⍝ while a booking is in flight, between claiming a seat and bumping the count. At rest
+⍝ the board always balances, so one PASS proves nothing. Each auditor runs in its own
+⍝ thread, loops many reads, and returns its own tear count.
+ NewSeats 1000
+ res←⎕TSYNC ({⊢Book¨⍳⍵}&500),({+/Board¨⍵⍴0}&¨3⍴100000)
+ torn←+/1↓res                       ⍝ drop the clerk's result; sum the auditors' tears
+ ok←0=torn
+ result←'FAIL' 'PASS'⊃⍨⎕IO+ok
+ ⎕←'B torn board  : torn reads = ',⍕torn
+ ⎕←'Scenario B: ',result

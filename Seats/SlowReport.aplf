@@ -1,0 +1,11 @@
+ total←SlowReport dummy;s
+⍝ Produce the "seats sold" report. Rendering it is slow, and the ⎕DL stands in for the
+⍝ time to lay out a big report. Once Book holds 'SEATS', bookings want the same lock,
+⍝ so how long this keeps it decides whether they get through.
+⍝ TODO: this holds 'SEATS' across the whole slow render, so every booking queues
+⍝ behind it.
+ :Hold 'SEATS'
+     s←SEATS                 ⍝ snapshot …
+     {}⎕DL 0.3               ⍝ … but render WITH the lock still held (the bug)
+ :EndHold
+ total←+/s

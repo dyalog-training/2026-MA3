@@ -1,0 +1,12 @@
+ ok←ReserveSP dummy
+⍝ Reserve a seat and charge the card, which needs both the 'SEATS' lock and the shared
+⍝ 'PAYMENT' gateway. This flow takes 'SEATS' first, then 'PAYMENT'. Its partner
+⍝ ReservePS takes them the other way round.
+⍝ TODO: two flows taking the locks in opposite orders can each hold their first and
+⍝ wait on the other's forever.
+ :Hold 'SEATS'
+     {}⎕DL 0.05              ⍝ (widen the race) let ReservePS grab 'PAYMENT' first
+     :Hold 'PAYMENT'
+         ok←1
+     :EndHold
+ :EndHold

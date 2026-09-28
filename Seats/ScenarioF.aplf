@@ -1,0 +1,16 @@
+ ScenarioF;booker;res;ms;ok;result
+⍝ ── F — Starvation (two locks) ───────────────────────────────────────────────
+⍝ SlowReport holds 'SEATS' across its whole slow render, so bookings queue behind it.
+⍝ The harness gives the report a small head start, then times booking 50 seats against
+⍝ it. Racy (render under the hold), the booking waits out the render; fixed (snapshot,
+⍝ render outside), it takes about as long as the booking work alone.
+⍝ NOTE: this only shows once Book holds 'SEATS' (the Task A/B fix). Do the single-lock
+⍝ tasks first, or booking never contends and this reads PASS for the wrong reason.
+ NewSeats 1000
+ booker←{_←⎕DL 0.02 ⋄ t0←3⊃⎕AI ⋄ _←Book¨⍳⍵ ⋄ (3⊃⎕AI)-t0}
+ res←⎕TSYNC (SlowReport&0)(booker&50)
+ ms←2⊃res
+ ok←ms<200
+ result←'FAIL' 'PASS'⊃⍨⎕IO+ok
+ ⎕←'F starvation  : booking wall-clock = ',(⍕ms),' ms'
+ ⎕←'Scenario F: ',result

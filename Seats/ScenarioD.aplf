@@ -1,0 +1,18 @@
+ ScenarioD;tids;ok;result
+⍝ ── D — Deadlock (two locks) ─────────────────────────────────────────────────
+⍝ ReserveSP and ReservePS take 'SEATS' and 'PAYMENT' in opposite orders. Under load
+⍝ each takes its first lock and waits on the other forever. The harness runs both under
+⍝ a 1008 guard, gives them a moment, then treats any thread still alive as deadlocked
+⍝ and kills it. It checks ⎕TNUMS rather than ⎕TSYNC, which would hang on a blocked
+⍝ thread. Your own flows carry no guard: the aim is to see the DEADLOCK (1008) and
+⍝ design it out. Do not :Trap it, since a trapped thread stays suspended with its token
+⍝ still held.
+ NewSeats 1000
+ DEADLOCK←0
+ tids←({1008::DEADLOCK←1 ⋄ ⊢ReserveSP ⍵}&0),({1008::DEADLOCK←1 ⋄ ⊢ReservePS ⍵}&0)
+ {}⎕DL 0.5                          ⍝ let the flows reach the deadlock (main thread idle)
+ :If ∨/tids∊⎕TNUMS ⋄ {}⎕TKILL tids ⋄ DEADLOCK←1 ⋄ :EndIf   ⍝ still blocked ⇒ deadlock
+ ok←0=DEADLOCK
+ result←'FAIL' 'PASS'⊃⍨⎕IO+ok
+ ⎕←'D deadlock    : deadlocked = ',⍕DEADLOCK
+ ⎕←'Scenario D: ',result

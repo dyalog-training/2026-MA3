@@ -1,0 +1,13 @@
+ RunAll
+⍝ Run all six scenarios and print the footer. A racy scenario does not fail the same
+⍝ way every run, so run this several times.
+ ⎕←'════════════════════════════════════════════════════════════════'
+ ⎕←' Seats — :Hold, and living with contention'
+ ⎕←'════════════════════════════════════════════════════════════════'
+ ⎕←'Single lock:'
+ ScenarioA ⋄ ScenarioB ⋄ ScenarioC
+ ⎕←''
+ ⎕←'Two locks (do the single-lock tasks first):'
+ ScenarioD ⋄ ScenarioE ⋄ ScenarioF
+ ⎕←''
+ ⎕←'A green PASS on a racy scenario is evidence, not proof. Run this several times.'

@@ -1,0 +1,10 @@
+ ok←ReservePS dummy
+⍝ Partner of ReserveSP. This flow takes 'PAYMENT' first, then 'SEATS', the reverse
+⍝ order. That difference is what lets a cycle form.
+⍝ TODO: taking the locks in the opposite order to ReserveSP is the hazard.
+ :Hold 'PAYMENT'
+     {}⎕DL 0.05              ⍝ (widen the race) let ReserveSP grab 'SEATS' first
+     :Hold 'SEATS'
+         ok←1
+     :EndHold
+ :EndHold

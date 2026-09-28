@@ -1,0 +1,14 @@
+ ScenarioA;oks;really;boardsays;ok;result
+⍝ ── A — Double-book (at rest) ─────────────────────────────────────────────────
+⍝ Four clerks go for the same free seat at once. Only one should win, and the count
+⍝ should still match the seats taken. You can see this fault at rest: once the run
+⍝ ends, several clerks report success for one seat, or the count no longer matches the
+⍝ seats actually taken.
+ NewSeats 10
+ oks←⎕TSYNC Book&¨4⍴5               ⍝ four clerks, one seat (#5)
+ really←+/SEATS                     ⍝ seats actually taken (the single source of truth)
+ boardsays←(≢SEATS)-Remaining 0     ⍝ what the board thinks is taken
+ ok←(1=+/oks)∧(boardsays=really)∧(1=really)
+ result←'FAIL' 'PASS'⊃⍨⎕IO+ok
+ ⎕←'A double-book : successes=',(⍕+/oks),' board=',(⍕boardsays),' really=',⍕really
+ ⎕←'Scenario A: ',result

@@ -1,0 +1,5 @@
+ free←Remaining dummy
+⍝ How many seats a customer sees as free.
+⍝ TODO: this trusts SOLD, the redundant counter, so it reports a stale number while a
+⍝ Book is part-way through.
+ free←(≢SEATS)-SOLD

@@ -1,0 +1,14 @@
+ ok←Book seat
+⍝ Sell one seat. Returns 1 if this clerk claimed it, 0 if it was already taken.
+⍝ TODO: this races two ways. Two clerks can double-book, because the check and the
+⍝ claim are on separate lines; and the board tears, because SEATS and SOLD update on
+⍝ separate lines.
+ :If 0=SEATS[seat]           ⍝ CHECK: is the seat free?
+     {}⎕DL 0.001             ⍝ another clerk may run here (widens the race)
+     SEATS[seat]←1           ⍝ ACT: claim it …
+     {}⎕DL 0.0003            ⍝ board is TORN here: SEATS updated, SOLD not yet
+     SOLD+←1                 ⍝ … and bump the count on a LATER line
+     ok←1
+ :Else
+     ok←0
+ :EndIf

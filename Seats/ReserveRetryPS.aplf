@@ -1,0 +1,19 @@
+ r←ReserveRetryPS n;i;got
+⍝ Partner of ReserveRetrySP: the same non-blocking retry, but it tries 'PAYMENT'
+⍝ first, then 'SEATS'.
+⍝ TODO: the opposite order to ReserveRetrySP is what lets the pair livelock.
+ :For i :In ⍳n
+     got←0
+     :Repeat
+         :Hold 'PAYMENT'
+             {}⎕DL 0.002        ⍝ (widen the race) let the other flow take its first lock
+             :Hold 'SEATS'
+                 got←1
+             :Else
+             :EndHold
+         :Else
+         :EndHold
+     :Until got
+     :Hold 'DONE' ⋄ DONE+←1 ⋄ :EndHold
+ :EndFor
+ r←0

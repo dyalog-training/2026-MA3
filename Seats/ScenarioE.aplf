@@ -1,0 +1,19 @@
+ ScenarioE;tids;t0;ok;result
+⍝ ── E — Livelock (two locks) ─────────────────────────────────────────────────
+⍝ The non-blocking retry avoids the deadlock but makes no progress: the two flows
+⍝ collide every round and retry forever, with no error to warn you. Each asks for 10
+⍝ bookings. The harness gives the pair one second and counts completions (DONE). A
+⍝ livelock is easy to miss, because nothing signals the stall; only the count shows it.
+ NewSeats 1000
+ DONE←0
+ tids←(ReserveRetrySP&10),(ReserveRetryPS&10)
+ t0←3⊃⎕AI
+ :While ∨/tids∊⎕TNUMS
+     {}⎕DL 0.02
+     :If 1<0.001×(3⊃⎕AI)-t0 ⋄ :Leave ⋄ :EndIf
+ :EndWhile
+ {}⎕TKILL tids
+ ok←DONE≥3
+ result←'FAIL' 'PASS'⊃⍨⎕IO+ok
+ ⎕←'E livelock    : bookings in 1s = ',⍕DONE
+ ⎕←'Scenario E: ',result

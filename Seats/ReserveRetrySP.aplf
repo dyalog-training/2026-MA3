@@ -1,0 +1,22 @@
+ r←ReserveRetrySP n;i;got
+⍝ Reserve n seats, each needing both 'SEATS' and 'PAYMENT'. To avoid the deadlock this
+⍝ uses non-blocking holds (:Hold … :Else): take 'SEATS', try 'PAYMENT' without waiting,
+⍝ and on a miss release everything and retry. It never blocks, so it never deadlocks.
+⍝ Each finished booking bumps the shared DONE counter.
+⍝ TODO: paired with ReserveRetryPS (opposite order), the two collide every round and
+⍝ retry forever. Nothing errors, and nothing progresses.
+ :For i :In ⍳n
+     got←0
+     :Repeat
+         :Hold 'SEATS'
+             {}⎕DL 0.002        ⍝ (widen the race) let the other flow take its first lock
+             :Hold 'PAYMENT'
+                 got←1
+             :Else
+             :EndHold
+         :Else
+         :EndHold
+     :Until got
+     :Hold 'DONE' ⋄ DONE+←1 ⋄ :EndHold
+ :EndFor
+ r←0

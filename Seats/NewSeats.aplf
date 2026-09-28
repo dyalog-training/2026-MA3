@@ -1,0 +1,7 @@
+ NewSeats capacity
+⍝ Seed the hall on one thread, before any others start.
+⍝ SEATS: a boolean vector, one per seat (0 free, 1 sold).
+⍝ SOLD : a running count of sold seats. It copies what SEATS already holds, and that
+⍝        copy is what lets the board tear.
+ SEATS←capacity⍴0
+ SOLD←0

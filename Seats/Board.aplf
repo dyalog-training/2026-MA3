@@ -1,0 +1,9 @@
+ torn←Board rdelay
+⍝ The "seats-left" board an auditor watches. It returns 1 if the board is torn, 0 if
+⍝ not. Torn means SOLD and the real count +/SEATS disagree. Both are read on one line,
+⍝ so the read itself is clean; it reports 1 when it lands between Book claiming a seat
+⍝ and Book bumping the count.
+⍝ rdelay stands in for the time to render a report. It is 0 except in ScenarioC.
+⍝ TODO: an auditor can read the board while a Book is part-way through.
+ torn←SOLD≠+/SEATS
+ {}⎕DL rdelay
