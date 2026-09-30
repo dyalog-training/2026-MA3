@@ -1,32 +1,29 @@
-## APL Threads
-Run `function` in a new thread with spawn `function&`. The result is the thread ID.
-Get array of results from array of thread IDs with `⎕TSYNC`. This blocks until all threads have completed.
-`⎕TSYNC` errors with `DOMAIN ERROR` if called on a completed thread. It should be used inline with spawn calls.
+# Concurrent Programming in Dyalog
 
-## Isolates
-Copy isolates `⎕CY'isolate'` (must be in `#`)
-How many processors? `1111⌶⍬`
-Run an expression in an isolate `function II`. Returns a **future**.
-Parallel-each `function IÏ`. Returns an **array of futures**.
+## Load Code Samples
 
-Futures may be restructured and passed around, only blocking when the value is required.
+Download directly from the internet into the active workspace:
 
-```apl
-fut ← {_←⎕DL 10 ⋄ ⍵}IÏ ⍳5
-r ← 10 10⍴fut
-r ← 1 0 1 0 0 ⊂ fut
-r ← 3⌽fut
+```
+      ]get -u https://github.com/dyalog-training/2026-MA3
+Working on it…
+#.Performance #.Seats #.WordSearch
+```
+
+If you have downloaded the repository as a zip, unzip and import it:
+
+```
+      ]get -u "C:\Users\rpark\Downloads\2026-MA3-main\2026-MA3-main"
+#.Performance #.Seats #.WordSearch
 ```
 
 ## Parallelisation Performance
 ```apl
-]import # /path/to/Performance
 Collatz 2 2e6
 chunks←10 Splits 2 2e6
-Best←{⍵⊃⍨⊃⍒⍵}
-Collatz¨chunks
-⎕TSYNC Collatz&¨chunks
-Collatz IÏ chunks
+Best Collatz¨chunks
+Best ⎕TSYNC Collatz&¨chunks
+Best Collatz IÏ chunks
 ```
 
 One collatz step is encoded in `CollatzStep`. The function `Collatz` gives the number of steps and starting number of the longest sequence in range `m... n`.
@@ -56,6 +53,36 @@ chunks←10 Splits 2 2e6
 2. Try to estimate run times of different versions based on number of processors in your machine and the average run time of a single chunk.
 3. Try using fewer chunks and more chunks than the number of processors. What happens to performance?
 4. Why do these expressions have these performance characteristics?
+
+## APL Threads
+Run `function` in a new thread with spawn `function&`. The result is the thread ID.
+Get array of results from array of thread IDs with `⎕TSYNC`. This blocks until all threads have completed.
+`⎕TSYNC` errors with `DOMAIN ERROR` if called on a completed thread. It should be used inline with spawn calls.
+
+```
+      tid←function&arg
+      r←⎕TSYNC tid
+VALUE ERROR: No result was provided when the context expected one
+      r←⎕TSYNC tid
+        ∧
+
+      ⎕←⎕TSYNC function&arg
+result
+```
+
+## Isolates
+Copy isolates `⎕CY'isolate'` (must be in `#`)
+Run an expression in an isolate `function II`. The result is a **future**.
+Parallel-each `function IÏ`. Returns an **array of futures**.
+
+Futures may be restructured and passed around, only blocking when the value is required.
+
+```apl
+fut ← {_←⎕DL 10 ⋄ ⍵}IÏ ⍳5
+r ← 10 10⍴fut
+r ← 1 0 1 0 0 ⊂ fut
+r ← 3⌽fut
+```
 
 ## The Token Pool
 Reserve a token range with `⎕TALLOC`.
