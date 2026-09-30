@@ -36,7 +36,7 @@ As written, the system crashes while attempting `ScenarioA`. You can use `)SIC` 
 ### Lock the Resources
 Make `ScenarioA` run successfully by adding `:Hold` statements around all lines that access shared state `WORDS` and `DIST`.
 
-To begin with, only lock the writer function `AddWord`. Then, run `ScenarioA` again and observe how the readers fail. The failure path is non-deterministic so you might need to try multiple times to see the failure.
+To begin with, only lock the writer function `AddWords`. Then, run `ScenarioA` again and observe how the readers fail. The failure path is non-deterministic so you might need to try multiple times to see the failure.
 
 Then add a lock to the `Search` function. After doing so, `ScenarioA` should print to the session:
 
@@ -57,16 +57,20 @@ expr1 ⋄ expr2 ⋄ expr3
 
 Secondly, allowing many requests that block others risks thread starvation.
 
+`WORDS` and `DIST` must always be in agreement, so keeping them separate risks . Instead of two variables, merge them into a single shared `INDEX←WORDS DIST`. Think about how you can remove the lock in the reader `Search` function. Does the writer `AddWords` function still need a lock as well?
+
+Once you have implemented this, check that the test passes. You should notice the overall run time decrease as well.
+
 ### Bonus: Reader / Writer Locking Pattern
 The snapshot approach might be fragile in a larger application with multiple related shared resources, or where having full copies of shared resources is not feasible due to memory constraints. While we advise avoiding this scenario if at all possible, it is interesting to try to implement a reader/writer locking implementation using `⎕TALLOC`, `⎕TGET` and `⎕TPUT`.
 
-Build a reader/writer lock from the token pool with a **negative "gate" token**, so that:
+Build a reader/writer lock from the token pool with a **negative "gate" token** and **positive "write lock" token**, so that:
 - while the index is free, any number of `Search` requests may read at once
-- an `AddWord` update waits for current readers to finish and blocks new `Search` threads
-- only one `AddWord` updates at a time
+- an `AddWords` update waits for current readers to finish and blocks new `Search` threads
+- only one `AddWords` updates at a time
 
 ### Bonus: Green Futures
-Another possibility is for `InsertNewWord` to put newly computed values into the token pool using `⎕TPUT`, and create permanently looping `Update` thread. The `Update` function can be called in a new thread. The challenge here is to account for errors during updates, and to make sure the `Update` loop restarts if its thread should disappear for any reason.
+Another possibility is for `AddWords` to put newly computed values into the token pool using `⎕TPUT`, and create permanently looping `Update` thread. The `Update` function can be called in a new thread. The challenge here is to account for errors during updates, and to make sure the `Update` loop restarts if its thread should disappear for any reason.
 
 ```
 ∇ Update token
