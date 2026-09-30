@@ -1,0 +1,5 @@
+ Bar arg
+ :Hold 'LOCKIT'
+     ⎕←(⊃⎕SI),' has the lock'
+     ÷0
+ :EndHold

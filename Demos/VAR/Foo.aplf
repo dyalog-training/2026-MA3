@@ -1,0 +1,3 @@
+Foo arg
+var[1],←⊂' thread ',⍕⎕TID
+⍝

@@ -1,0 +1,7 @@
+Run
+GATE←42
+⎕TPUT GATE
+Foo&¨1 2   ⍝ Trace here
+⍝ Close gate
+⍝ Kill thread
+⍝ Gate can never open

@@ -1,0 +1,9 @@
+ Foo arg
+ :Trap 0
+     :Hold 'LOCKIT'
+         ⎕←(⊃⎕SI),' has the lock'
+         ÷0
+     :EndHold
+ :Else
+     ⎕←'lock released'
+ :EndTrap

@@ -1,0 +1,5 @@
+ Foo arg
+ ⎕TGET GATE
+ ⎕←'Thread ',⎕TID⍕⍛,' closed the gate'
+ ⎕TPUT GATE
+ ⎕←'Thread ',⎕TID⍕⍛,' opened the gate'
