@@ -7,5 +7,5 @@
  :EndIf
  WORDS⍪←exists~⍛/new
  new_dist ← new ∘.Dist WORDS
- DIST←↑DIST,⍥↓new_dist
+ DIST←(DIST,(≢DIST)↑⍉new_dist)⍪new_dist
  r←(+/~exists)⍕⍛,' words added'
