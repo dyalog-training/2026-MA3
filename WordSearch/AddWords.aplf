@@ -5,7 +5,8 @@
      r←'0 words added'
      :Return
  :EndIf
- WORDS⍪←exists~⍛/new
+ new/⍨←~exists
+ WORDS⍪←new
  new_dist ← new ∘.Dist WORDS
  DIST←(DIST,(≢DIST)↑⍉new_dist)⍪new_dist
  r←(+/~exists)⍕⍛,' words added'
