@@ -1,0 +1,21 @@
+ ScenarioA;chunks;chunk;words_ok;dist_ok;result
+
+⍝ In this scenario, we do simultaneous addition and searching of words.
+⍝ As written, the shared WORDS/DIST are updated with no coordination, so threads corrupt one another and the scenario ERRORS partway.
+⍝ Use )SIC to clear suspended threads.
+
+ WORDS←''
+ DIST←0 0⍴0
+
+ chunks←(∊20⍴⊂40↑1)⊂CORPUS   ⍝ 20 chunks of 40 words each
+ :For chunk :in chunks
+     {}⎕TSYNC (AddWords&¨chunk),(Search&¨CORPUS[100?≢CORPUS])   ⍝ Many writers and readers
+ :endfor
+
+⍝ Check correctness
+ words_ok←WORDS≡⍥{⍵[⍋⍵]}CORPUS
+ dist_ok←(⍴DIST)≡2⍴≢WORDS
+ result←'FAIL' 'PASS'⊃⍨⎕IO+words_ok∧dist_ok
+ ⎕←'Words added: ',(⍕≢WORDS),'/',(⍕≢CORPUS)
+ ⎕←'⍴DIST: ',⍕⍴DIST
+ ⎕←'Scenario A: ',result
