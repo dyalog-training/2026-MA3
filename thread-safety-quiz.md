@@ -47,13 +47,13 @@ Answer with:
 1. **SAFE** or **UNSAFE**
 2. Name of the hazards, one or more of:
 
-- lost update
-- torn read
-- order violation
-- deadlock
-- livelock
-- starvation
-- none
+    - lost update
+    - torn read
+    - order violation
+    - deadlock
+    - livelock
+    - starvation
+    - none
 
 3. Suggest a small fix that makes an unsafe scenario safer.
 
