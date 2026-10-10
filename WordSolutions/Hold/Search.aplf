@@ -1,7 +1,9 @@
  r←Search word;exists;idx
- exists←(≢WORDS)≥idx←WORDS⍳⊂word
- :If exists
-    r←WORDS⊃⍨2⊃⍋idx⌷DIST
- :Else
-    r←'Word not found.'
- :EndIf
+ :Hold 'INDEX'
+     exists←(≢WORDS)≥idx←WORDS⍳⊂word
+     :If exists
+         r←WORDS⊃⍨2⊃⍋idx⌷DIST
+     :Else
+         r←'Word not found.'
+     :EndIf
+ :EndHold

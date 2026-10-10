@@ -1,4 +1,4 @@
- ScenarioA;chunks;chunk;words_ok;dist_ok;result
+ ScenarioA;chunks;chunk;words_ok;dist_ok;result;WORDS;DIST
 
 ⍝ In this scenario, we do simultaneous addition and searching of words.
 ⍝ As written, the shared WORDS/DIST are updated with no coordination, so threads corrupt one another and the scenario ERRORS partway.
@@ -6,13 +6,15 @@
 
  WORDS←''
  DIST←0 0⍴0
+ INDEX←WORDS DIST
 
  chunks←(∊20⍴⊂40↑1)⊂CORPUS   ⍝ 20 chunks of 40 words each
- :For chunk :in chunks
-     {}⎕TSYNC (AddWords&¨chunk),(Search&¨CORPUS[100?≢CORPUS])   ⍝ Many writers and readers
- :endfor
+ :For chunk :In chunks
+     {}⎕TSYNC(AddWords&¨chunk),(Search&¨CORPUS[100?≢CORPUS])   ⍝ Many writers and readers
+ :EndFor
 
 ⍝ Check correctness
+ (WORDS DIST)←INDEX
  words_ok←WORDS≡⍥{⍵[⍋⍵]}CORPUS
  dist_ok←(⍴DIST)≡2⍴≢WORDS
  result←'FAIL' 'PASS'⊃⍨⎕IO+words_ok∧dist_ok

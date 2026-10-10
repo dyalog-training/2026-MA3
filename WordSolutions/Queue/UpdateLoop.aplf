@@ -1,0 +1,16 @@
+ UpdateLoop dum;new;exists;WORDS;DIST;new_dist
+ :While RUNNING
+  ⍝   new←⊃⎕TGET JOB       ⍝ One job at a time
+     new←⊃,/⎕TGET ⎕TPOOL   ⍝ All pending jobs
+     :Hold 'INDEX'   ⍝ This hold not strictly needed, provided only one UpdateLoop thread runs at a time
+         (WORDS DIST)←INDEX
+         exists←(≢WORDS)≥WORDS⍳new
+         :If ∨/~exists
+             new/⍨←~exists
+             WORDS⍪←new
+             new_dist←new∘.Dist WORDS
+             DIST←(DIST,(≢DIST)↑⍉new_dist)⍪new_dist
+             INDEX←(WORDS DIST)
+         :EndIf
+     :EndHold
+ :EndWhile

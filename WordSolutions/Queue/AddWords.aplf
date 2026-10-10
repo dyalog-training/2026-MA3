@@ -1,12 +1,11 @@
- r←AddWords new;exists;new_dist
+ r←AddWords new;exists;new_dist;WORDS
  new←⊆new
+ WORDS←⊃INDEX
  exists←(≢WORDS)≥WORDS⍳new
  :If ∧/exists
-     r←'0 words added'
+     r←'0 words will be added'
      :Return
  :EndIf
  new/⍨←~exists
- WORDS⍪←new
- new_dist ← new ∘.Dist WORDS
- DIST←(DIST,(≢DIST)↑⍉new_dist)⍪new_dist
- r←(+/~exists)⍕⍛,' words added'
+ new ⎕TPUT JOB
+ r←(+/~exists)⍕⍛,' words will be added'

@@ -1,4 +1,5 @@
- r←Search word;exists;idx
+ r←Search word;exists;idx;WORDS;DIST
+ (WORDS DIST)←INDEX   ⍝ Take snapshot to guarantee consistent WORDS DIST
  exists←(≢WORDS)≥idx←WORDS⍳⊂word
  :If exists
     r←WORDS⊃⍨2⊃⍋idx⌷DIST

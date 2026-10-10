@@ -1,7 +1,20 @@
  r←Search word;exists;idx
+ ⎕TGET RGATE
+ :Hold 'READERS'
+     :If 0=READERS   ⍝ First reader prevents writers
+         ⎕TGET WLOCK
+     :EndIf
+     READERS+←1
+ :EndHold
  exists←(≢WORDS)≥idx←WORDS⍳⊂word
  :If exists
-    r←WORDS⊃⍨2⊃⍋idx⌷DIST
+     r←WORDS⊃⍨2⊃⍋idx⌷DIST
  :Else
-    r←'Word not found.'
+     r←'Word not found.'
  :EndIf
+ :Hold 'READERS'
+     :If 1=READERS   ⍝ Last reader allows writers
+         ⎕TPUT WLOCK
+     :EndIf
+     READERS-←1
+ :EndHold

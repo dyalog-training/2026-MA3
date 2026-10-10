@@ -1,4 +1,4 @@
- ScenarioA;chunks;chunk;words_ok;dist_ok;result
+ ScenarioA;chunks;chunk;words_ok;dist_ok;result;base
 
 ⍝ In this scenario, we do simultaneous addition and searching of words.
 ⍝ As written, the shared WORDS/DIST are updated with no coordination, so threads corrupt one another and the scenario ERRORS partway.
@@ -6,6 +6,17 @@
 
  WORDS←''
  DIST←0 0⍴0
+
+⍝ Reader/writer lock using the token pool
+⍝ Only one writer at a time; writers block other readers and writers
+⍝ Many readers may read at once if no writers are writing
+ base←⎕TALLOC 1 'WORDSEARCH'
+ RGATE←base+0.1   ⍝ Readers take +ve, writers take -ve
+ READERS←0        ⍝ Track number of active readers
+ WLOCK←base+0.2   ⍝ Prevent writers
+                  ⍝ First reader takes this, last reader puts it back
+                  ⍝ Writers hold this while writing
+ ⎕TPUT WLOCK (-RGATE)
 
  chunks←(∊20⍴⊂40↑1)⊂CORPUS   ⍝ 20 chunks of 40 words each
  :For chunk :in chunks

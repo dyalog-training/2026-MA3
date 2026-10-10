@@ -1,7 +1,8 @@
- r←Search word;exists;idx
+ r←Search word;exists;idx;WORDS;DIST
+ (WORDS DIST)←INDEX
  exists←(≢WORDS)≥idx←WORDS⍳⊂word
  :If exists
-    r←WORDS⊃⍨2⊃⍋idx⌷DIST
+     r←WORDS⊃⍨2⊃⍋idx⌷DIST
  :Else
-    r←'Word not found.'
+     r←'Word not found.'
  :EndIf
