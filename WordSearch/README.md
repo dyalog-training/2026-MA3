@@ -57,7 +57,7 @@ expr1 ⋄ expr2 ⋄ expr3
 
 Secondly, allowing many requests that block others risks thread starvation.
 
-`WORDS` and `DIST` must always be in agreement, so keeping them separate risks . Instead of two variables, merge them into a single shared `INDEX←WORDS DIST`. Think about how you can remove the lock in the reader `Search` function. Does the writer `AddWords` function still need a lock as well?
+`WORDS` and `DIST` must always be in agreement, so keeping them separate risks them being out of step at certain times. Instead of two variables, merge them into a single shared `INDEX←WORDS DIST`. Think about how you can remove the lock in the reader `Search` function. Does the writer `AddWords` function still need a lock as well?
 
 Once you have implemented this, check that the test passes. You should notice the overall run time decrease as well.
 
